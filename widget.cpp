@@ -41,8 +41,9 @@ void XYSeriesReader::update(const std::string data)
 
     if(time_costs_data.size() > 0 && time_costs_data[0] != prev_data)
     {
-        assert(time_costs_data.size() == 6);
-        assert(m_series.size() == 6);
+        //assert(time_costs_data.size() == 6);
+        //assert(m_series.size() == 6);
+
         for(int i = 0; i < time_costs_data.size(); ++i){
             qint64 range = 200;
             QVector<QPointF> oldPoints = m_series[i]->pointsVector();
@@ -68,7 +69,7 @@ void XYSeriesReader::update(const std::string data)
 /*
  * TimeWidget
  */
-
+/*
 TimeWidget::TimeWidget(QWidget *parent)
     : QWidget(parent),
       m_chart(0),
@@ -109,6 +110,54 @@ TimeWidget::TimeWidget(QWidget *parent)
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start();
 }
+*/
+TimeWidget::TimeWidget(QWidget *parent, std::vector<std::string> line_names)
+    : QWidget(parent),
+      m_chart(0),
+      m_reader(0)
+{
+    m_chart = new QChart;
+    QChartView *chartView = new QChartView(m_chart);
+    chartView->setMinimumSize(1200, 600);
+
+    QValueAxis *axisX = new QValueAxis;
+    axisX->setRange(0, 200);
+    QValueAxis *axisY = new QValueAxis;
+    axisY->setRange(-2, 150);
+    axisY->setTitleText("Cost(ms)");
+
+    assert(line_names.size() < 7);
+    series_num = line_names.size();
+    legend_names.clear();
+    foreach(std::string line, line_names){
+        legend_names.append(QString::fromStdString(line));
+    }
+
+    for(int i = 0; i < series_num; ++i){
+        _addSeries(i);
+        m_chart->setAxisX(axisX, m_series[i]);
+        m_chart->setAxisY(axisY, m_series[i]);
+    }
+
+    m_chart->setTitle("Time Cost");
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(chartView);
+    setLayout(mainLayout);
+
+    foreach (QLegendMarker* marker, m_chart->legend()->markers()) {
+        QObject::disconnect(marker, SIGNAL(clicked()), this, SLOT(handleMarkerClicked()));
+        QObject::connect(marker, SIGNAL(clicked()), this, SLOT(handleMarkerClicked()));
+    }
+
+    m_reader = new XYSeriesReader(m_series);
+
+    timer = new QTimer;
+    timer->setInterval(20);
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer->start();
+}
+
 
 void TimeWidget::setData(boost::array<char, 1000>* _p_buf, size_t* _p_len)
 {

@@ -38,9 +38,20 @@ int main(int argc, char *argv[])
     std::thread m_thread(receiveData);
 
     QApplication a(argc, argv);
-    TimeWidget w;
-    w.setData(&buf, &len);
-    w.show();
+    TimeWidget *w;
+    if(argc > 1){
+        std::vector<std::string> lines;
+        for(int i = 1; i < argc; ++i){
+            lines.push_back(argv[i]);
+        }
+        w = new TimeWidget(0, lines);
+    }
+    else{
+        w = new TimeWidget;
+    }
+
+    w->setData(&buf, &len);
+    w->show();
 
     return a.exec();
 }

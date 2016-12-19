@@ -34,7 +34,8 @@ class TimeWidget : public QWidget
     Q_OBJECT
 
 public:
-    TimeWidget(QWidget *parent = 0);
+    //TimeWidget(QWidget *parent = 0);
+    TimeWidget(QWidget *parent = 0, std::vector<std::string> line_names={"all", "preprocess", "proposal", "detect","tracking", "recognition"});
     void setData(boost::array<char, 1000>* p_buf, size_t* p_len);
 
 public slots:
@@ -55,8 +56,8 @@ private:
     boost::array<char, 1000>* p_buf;
     size_t* p_len;
     int series_num = 6;
-    const QStringList color_names = {"red","yellow","green","blue","purple","gray"};
-    const QList<QString> legend_names = {"all", "preprocess", "proposal", "detect","tracking", "recognition"};
+    const QStringList color_names = {"red","yellow","green","blue","purple","gray", "pink"};
+    QList<QString> legend_names = {"all", "preprocess", "proposal", "detect","tracking", "recognition"};
 
     void _addSeries(int num);
 };
