@@ -4,7 +4,7 @@
 
 It is based on [QtChart from Qt5.7](http://doc.qt.io/qt-5/qtcharts-index.html). You can find easily which part of your code runs slowly.
 
-## Build
+## How to use
 1. git clone https://github.com/DuinoDu/time_cost_visualization
 2. use Qt Creator to build it. You should use Qt5.7
 3. Add following code snippets to your project, in order to get data and send to visuatlization tool.
@@ -62,8 +62,8 @@ bool SocketSender::blockSend(const string &msg)
 In your code:
 
 ```
-#ifdef debug_time
-    socketsender sender;
+#ifdef DEBUG_TIME
+    SocketSender sender;
 #endif
 
 ...
