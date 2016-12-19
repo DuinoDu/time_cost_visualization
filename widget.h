@@ -17,11 +17,13 @@ QT_CHARTS_END_NAMESPACE
 
 QT_CHARTS_USE_NAMESPACE
 
-class XYSeriesReader
+class XYSeriesReader : public QObject
 {
+    Q_OBJECT
 public:
     XYSeriesReader(QList<QLineSeries*> series):m_series(series){}
     void update(const std::string data);
+
 private:
     QList<QLineSeries*> m_series;
     std::string prev_data;
@@ -41,6 +43,9 @@ public slots:
         m_reader->update(data);
     }
 
+private slots:
+    void handleMarkerClicked();
+
 private:
     QChart *m_chart;
     QList<QLineSeries *> m_series;
@@ -49,8 +54,11 @@ private:
     QTimer *timer;
     boost::array<char, 1000>* p_buf;
     size_t* p_len;
+    int series_num = 6;
+    const QStringList color_names = {"red","yellow","green","blue","purple","gray"};
+    const QList<QString> legend_names = {"all", "preprocess", "proposal", "detect","tracking", "recognition"};
 
-    void _addSeries(const QString& name);
+    void _addSeries(int num);
 };
 
 #endif // WIDGET_H

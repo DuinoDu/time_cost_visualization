@@ -36,7 +36,6 @@ void receiveData()
 int main(int argc, char *argv[])
 {
     std::thread m_thread(receiveData);
-    //m_thread.join();
 
     QApplication a(argc, argv);
     TimeWidget w;
